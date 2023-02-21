@@ -10,11 +10,11 @@ import BingoCanvas from '../BingoCanvas';
 
 
 function App() {
-  // const [itemList, setItemList] = useState<Item[]>([]);
-  // chrome.storage.local.get("itemList").then((data)=>{
-  //   setItemList(data.itemList);
-  // })
-  const [itemList, setItemList] = useState<Item[]>(data.itemList);
+  const [itemList, setItemList] = useState<Item[]>([]);
+  chrome.storage.local.get("itemList").then((data)=>{
+    setItemList(data.itemList);
+  })
+  // const [itemList, setItemList] = useState<Item[]>(data.itemList);
   const [bingoBoard, setBingoBoard] = useState<Item[][]>([]);
   const [bingoList, setBingoList] = useState<Item[]>([]);
   const addItemCallback = (item: Item) => {
