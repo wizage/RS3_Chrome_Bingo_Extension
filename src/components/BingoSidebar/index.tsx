@@ -34,7 +34,7 @@ const ImageCell = ({ rowData, dataKey, ...props }:ImageCellProps) => (
         display: 'inline-block'
       }}
     >
-      <img src={rowData?.imageUrl} height="40" width="40" />
+      <img src={rowData?.pixelUrl} height="40" width="40" />
     </div>
   </Table.Cell>
 );

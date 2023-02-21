@@ -19,11 +19,16 @@
 function gatherInfo(){
     var elements = document.getElementsByClassName('infobox-item');
     var itemData = tableToJson(elements[0]);
+    var pixelData= document.getElementsByClassName('image')[0].firstChild.src;
     var imageData = document.getElementsByClassName('image')[1].firstChild.src;
+    if (!imageData.includes("thumb")){
+        imageData = document.getElementsByClassName('image')[2].firstChild.src;
+    }
     var finalData = {};
     finalData['name'] = itemData['name'];
+    finalData['pixelUrl'] = pixelData;
     finalData['imageUrl'] = imageData;
-    return itemData;
+    return finalData;
 }
 
 function tableToJson(table) {
