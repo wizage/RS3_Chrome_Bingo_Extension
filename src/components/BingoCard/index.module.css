@@ -1,0 +1,24 @@
+.bingoSpace {
+  width: 180px ;
+  height: 180px ;
+  overflow: 'auto'
+}
+
+.bingoRow{
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+}
+
+.imageStyle {
+  display: block;
+  max-width:80px;
+  max-height:40px;
+  width: auto;
+  height: auto;
+  margin: auto;
+}
