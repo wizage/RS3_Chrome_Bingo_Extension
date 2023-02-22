@@ -15,3 +15,15 @@ export interface jsonDoc {
   itemList: Item[];
   bingoCard: bingoStore;
 }
+
+export interface Settings {
+  bingoSize: number;
+  bingoTitle: string;
+  fontFormat: string;
+  fontSize: number;
+  fontType: string;
+  fontColor: string;
+  outlineEnable: boolean;
+  outlineColor: string;
+  lineColor: string;
+}
