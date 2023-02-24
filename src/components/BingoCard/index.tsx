@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Panel, InputPicker, Placeholder, Input } from 'rsuite';
-import { Item } from '../../types';
+import { Item, Settings } from '../../types';
 import styles from './index.module.css';
 
 interface BingoCardProps {
   bingoList: Item[],
-  bingoSize: number,
+  bingoSettings: Settings,
   bingoBoard: Item[][],
   setBingoBoard:(bingoBoard: Item[][]) => void,
 }
 
 interface DrawCardProps {
-  bingoSize:number, 
+  bingoSettings: Settings, 
   bingoBoard:Item[][], 
   setBingoCard:(item: Item, position:number[]) => void,
   setOverrideName:(name:string, position:number[]) => void,
@@ -45,11 +45,11 @@ function bingoSpace({item, location, setBingoCard, setOverrideName, bingoList }:
     )
 }
 
-function drawBoard({bingoSize, bingoBoard, setBingoCard, setOverrideName, bingoList}:DrawCardProps){
+function drawBoard({bingoSettings, bingoBoard, setBingoCard, setOverrideName, bingoList}:DrawCardProps){
   let board = [];
-  for(let i = 0; i < bingoSize; i++){
+  for(let i = 0; i < bingoSettings.bingoSize; i++){
     let row = [];
-    for(let j = 0; j < bingoSize; j++){
+    for(let j = 0; j < bingoSettings.bingoSize; j++){
       if (bingoBoard[i] && bingoBoard[i][j]){
         row.push(bingoSpace({item:bingoBoard[i][j], location:[i,j], setBingoCard, setOverrideName, bingoList}))
       } else{
@@ -61,7 +61,7 @@ function drawBoard({bingoSize, bingoBoard, setBingoCard, setOverrideName, bingoL
   }
   return board;
 }
-function BingoCard({bingoList, bingoSize, bingoBoard, setBingoBoard}:BingoCardProps) {
+function BingoCard({bingoList, bingoSettings, bingoBoard, setBingoBoard}:BingoCardProps) {
   const setBingoCard = (item: Item, position:number[]) => {
     if(!item){
       item = blankItem;
@@ -100,7 +100,7 @@ function BingoCard({bingoList, bingoSize, bingoBoard, setBingoBoard}:BingoCardPr
   return(
     <div className={styles.content}>
       <div>
-        {drawBoard({bingoSize, bingoBoard, setBingoCard, setOverrideName, bingoList})}
+        {drawBoard({bingoSettings, bingoBoard, setBingoCard, setOverrideName, bingoList})}
       </div>
     </div>
   );

@@ -10,8 +10,7 @@ export interface bingoStore {
   [key: string]: Item;
 }
 export interface jsonDoc {
-  cardsize: number;
-  title: string;
+  settings: Settings;
   itemList: Item[];
   bingoCard: bingoStore;
 }
@@ -26,4 +25,7 @@ export interface Settings {
   outlineEnable: boolean;
   outlineColor: string;
   lineColor: string;
+  backgroundColor:string;
+  autoRefresh:boolean;
+  refreshNumber:number;
 }

@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { Navbar, Nav } from 'rsuite';
-import { Item, jsonDoc } from '../../types';
+import { Item, jsonDoc, Settings } from '../../types';
 
 interface BingoHeaderProps {
   bingoList: Item[],
-  bingoSize: number,
+  bingoSettings: Settings,
   bingoBoard: Item[][],
   setBingoBoard:(bingoBoard: Item[][]) => void,
 }
 
 
-function exportJson(bingoList: Item[], bingoSize: number, bingoBoard: Item[][],){
-  const title = "Card 1";
+function exportJson(bingoList: Item[], bingoSettings: Settings, bingoBoard: Item[][],){
   let jsonDoc : jsonDoc = {
-    cardsize: bingoSize,
-    title: "Card 1",
+    settings: bingoSettings,
     itemList: bingoList,
     bingoCard: {}
   };
@@ -30,7 +28,7 @@ function exportJson(bingoList: Item[], bingoSize: number, bingoBoard: Item[][],)
       }
     }
   }
-  const fileName = `${title}`
+  const fileName = `${bingoSettings.bingoTitle !== ''? bingoSettings.bingoTitle:'BingoCard'}`
   const json = JSON.stringify(jsonDoc, undefined, 2);
   const blob = new Blob([json], {type: "application/json"});
   const href = URL.createObjectURL(blob);
@@ -47,11 +45,11 @@ function exportJson(bingoList: Item[], bingoSize: number, bingoBoard: Item[][],)
 
 
 
-function BingoHeader({bingoList, bingoSize, bingoBoard, setBingoBoard} : BingoHeaderProps) {
+function BingoHeader({bingoList, bingoSettings, bingoBoard, setBingoBoard} : BingoHeaderProps) {
   const exportClick = (eventKey: string | undefined) => {
     switch (eventKey) {
       case 'JSON':
-        exportJson(bingoList, bingoSize, bingoBoard);
+        exportJson(bingoList, bingoSettings, bingoBoard);
         break;
       default:
         console.log(eventKey)

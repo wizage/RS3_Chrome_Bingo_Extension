@@ -1,13 +1,14 @@
 import exp from 'constants';
-import React, { useState } from 'react';
-import { Panel, Table, InputGroup, InputNumber, IconButton} from 'rsuite';
-import ArrowLeftIcon from '@rsuite/icons/ArrowLeft';
-import { Item } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { Panel, Table, InputGroup, InputNumber, Form, Toggle, InputPicker, Schema} from 'rsuite';
+import { Item, Settings } from '../../types';
+import FontPicker from '../Font-Picker';
+const { StringType, NumberType, BooleanType } = Schema.Types;
 
 interface BingoSidebarProps {
   itemList: Item[],
-  bingoSize: number,
-  setBingoSize: (value:number) => void,
+  bingoSettings: Settings,
+  setBingoSettings: (value:Settings) => void,
 }
 
 interface ImageCellProps {
@@ -15,12 +16,33 @@ interface ImageCellProps {
   dataKey: string,
 }
 
-const styleCenter = {
-  display: 'flex',
-  //justifyContent: 'center',
-  alignItems: 'center',
-  height: '20px'
-};
+const formModel = Schema.Model({
+  bingoSize: NumberType('Please enter a valid number').range(
+    2,
+    10,
+    'Please enter a number between 2 and 10'
+  ),
+  bingoTitle: StringType(),
+  fontSize: NumberType(),
+  fontType: StringType(),
+  fontColor: StringType().addRule((value) =>{
+    var reg=/^#([0-9a-f]{3}){1,2}$/i;
+    return reg.test(value);
+  }, 'Please enter a valid color hex'),
+  outlineEnable: BooleanType(),
+  outlineColor: StringType().addRule((value) =>{
+    var reg=/^#([0-9a-f]{3}){1,2}$/i;
+    return reg.test(value);
+  }, 'Please enter a valid color hex'),
+  lineColor: StringType().addRule((value) =>{
+    var reg=/^#([0-9a-f]{3}){1,2}$/i;
+    return reg.test(value);
+  }, 'Please enter a valid color hex'),
+  backgroundColor:StringType().addRule((value) =>{
+    var reg=/^#([0-9a-f]{3}){1,2}$/i;
+    return reg.test(value);
+  }, 'Please enter a valid color hex')
+});
 
 const ImageCell = ({ rowData, dataKey, ...props }:ImageCellProps) => (
   <Table.Cell {...props} style={{ padding: 0 }}>
@@ -43,7 +65,7 @@ const ImageCell = ({ rowData, dataKey, ...props }:ImageCellProps) => (
 function drawTable(itemList:Item[]){
 
     return(
-    <Table data={itemList} autoHeight wordWrap="break-word">
+    <Table data={itemList} height={295} wordWrap="break-word">
       <Table.Column width={80} align="center">
         <Table.HeaderCell>Image</Table.HeaderCell>
         <ImageCell dataKey="imageUrl" />
@@ -56,26 +78,120 @@ function drawTable(itemList:Item[]){
 }
 
 
-function BingoSidebar({itemList, bingoSize, setBingoSize}:BingoSidebarProps):JSX.Element {
+function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarProps):JSX.Element {
+  const hiddenDebugFont = true;
+  const [formUpdates, setFormUpdates] = useState<Settings>(bingoSettings);
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {setBingoSettings(formUpdates)}, 500);
+    return () => clearTimeout(timeOutId);
+  }, [formUpdates]);
+  const updateFontFamily = (value:string) => {
+    setFormUpdates({
+      ...formUpdates,
+      fontType: value,
+    });
+  }
+  const formMap = (value:Record<string,any>) => {
+    if (value.autoRefresh){
+      let refreshNumber = 0;
+      refreshNumber = value.refreshNumber === 0? 1:0;
+    }
+    setFormUpdates({
+      ...value as Settings,
+      fontSize: parseInt(value.fontSize),
+      bingoSize: parseInt(value.bingoSize),
+      refreshNumber: value.autoRefresh ? Math.random()*10000 : value.refreshNumber,
+    })
+  }
+  
+
   return(
-    <Panel bordered style={{height:"100%", overflow: 'auto'}} header="Settings">
-        <InputGroup>
-          <InputNumber onChange={value => { 
-              if(typeof value === 'string') setBingoSize(parseInt(value))
-              else setBingoSize(value)}
-            }
-          value={bingoSize}
+    <Panel bordered style={{height:"1250px", overflow: 'auto'}} header="Settings">
+      
+      <Form 
+        fluid
+        formValue={formUpdates}
+        model={formModel}
+        onChange={formMap}
+      >
+        <Form.Group controlId={'name-input'}>
+          <Form.ControlLabel>Bingo Card Name</Form.ControlLabel>
+          <Form.Control name="bingoTitle" />
+        </Form.Group>
+        <Form.Group controlId={'size-input'}>
+          <Form.ControlLabel>Bingo Card Size</Form.ControlLabel>
+          <InputGroup>
+            <Form.Control 
+              name='bingoSize'
+              accepter={InputNumber}
+            />
+            <InputGroup.Addon>x</InputGroup.Addon>
+            {/* <InputNumber onChange={value => { 
+              console.log(value, typeof value)
+                if(typeof value === 'string') setBingoSize(4)
+                else setBingoSize(value)}
+              }
+            value={bingoSize}
+            /> */}
+            <Form.Control 
+              name='bingoSize'
+              accepter={InputNumber}
+            />
+          </InputGroup>
+        </Form.Group>
+        <Form.Group controlId={'font-family-input'}>
+          <Form.ControlLabel>Font Family</Form.ControlLabel>
+          <FontPicker apiKey='AIzaSyD8Q42WjTFB6ECYa7Xjm-DK4eZtW0z8APA' activeFontFamily={bingoSettings.fontType} updateFontFamily={updateFontFamily}/>
+        </Form.Group>
+        <Form.Group controlId={'font-size-input'}>
+          <Form.ControlLabel>Font Size</Form.ControlLabel>
+          <Form.Control 
+            name='fontSize'
+            postfix="px"
+            accepter={InputNumber}
           />
-          <InputGroup.Addon>x</InputGroup.Addon>
-          <InputNumber onChange={value => { 
-            console.log(value, typeof value)
-              if(typeof value === 'string') setBingoSize(4)
-              else setBingoSize(value)}
-            }
-          value={bingoSize}
+        </Form.Group>
+        <Form.Group controlId={'font-style-input'}>
+          <Form.ControlLabel>Font Style</Form.ControlLabel>
+          <Form.Control 
+            name='fontFormat'
+            block
+            data={[{value:'bold', label:'Bold'}, {value:'italic', label: 'Italic'}, {value:'italic bold', label:'Italic Bold'}]}
+            accepter={InputPicker}
           />
-        </InputGroup>
+        </Form.Group>
+        <Form.Group controlId={'font-color-input'}>
+          <Form.ControlLabel>Font Color (Hex)</Form.ControlLabel>
+          <Form.Control name="fontColor" />
+        </Form.Group>
+        <Form.Group controlId={'outline-enable-input'}>
+          <Form.ControlLabel>Outline Color Enabled</Form.ControlLabel>
+          <Form.Control name="outlineEnable" accepter={Toggle}/>
+        </Form.Group>
+        <Form.Group controlId={'outline-color-input'}>
+          <Form.ControlLabel>Outline Color (Hex)</Form.ControlLabel>
+          <Form.Control name="outlineColor" />
+        </Form.Group>
+        <Form.Group controlId={'background-color-input'}>
+          <Form.ControlLabel>Background Color (Hex)</Form.ControlLabel>
+          <Form.Control name="backgroundColor" />
+        </Form.Group>
+        <Form.Group controlId={'line-color-input'}>
+          <Form.ControlLabel>Line Color (Hex)</Form.ControlLabel>
+          <Form.Control name="lineColor" />
+        </Form.Group>
+        
+        <Form.Group controlId={'auto-refresh-input'}>
+          <Form.ControlLabel>Enable Auto Refresh</Form.ControlLabel>
+          <Form.Control name="autoRefresh" accepter={Toggle}/>
+          <Form.HelpText>This can slow down or heavily impact performance on slower computers.</Form.HelpText>
+        </Form.Group>
+        <Form.Group controlId={'table-input-label'}>
+          <Form.ControlLabel>Remove item from list</Form.ControlLabel>
+        </Form.Group>
+      </Form>
       {drawTable(itemList)}
+      <div className='apply-font' style={{visibility:hiddenDebugFont?'hidden':'visible'}}>Testing font</div>
     </Panel>
   );
 }

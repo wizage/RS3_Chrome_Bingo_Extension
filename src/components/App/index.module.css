@@ -3,3 +3,8 @@
   bottom: 25px;
   right: 25px;
 }
+
+.button {
+  display:block;
+  margin: 15px auto;
+}
