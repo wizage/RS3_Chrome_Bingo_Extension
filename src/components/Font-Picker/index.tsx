@@ -136,9 +136,9 @@ export default class FontPicker extends PureComponent<Props, State> {
     });
     
     if (loadingStatus !== 'finished'){
-      return (<SelectPicker block loading defaultValue={activeFontFamily} data={[{value:activeFontFamily, label:activeFontFamily}]} />)
+      return (<SelectPicker block loading value={activeFontFamily} data={[{value:activeFontFamily, label:activeFontFamily}]} />)
     } else {
-      return(<SelectPicker block data={fontMap} defaultValue={activeFontFamily} onChange={(value) => {
+      return(<SelectPicker block data={fontMap} value={activeFontFamily} onChange={(value) => {
         if (value) {
           updateFontFamily(value);
           this.setActiveFontFamily(value);

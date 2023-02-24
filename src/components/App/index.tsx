@@ -18,11 +18,16 @@ function App() {
   const [bingoSettings, setBingoSettings] = useState<Settings>(defaultSettings);
   if (window.chrome && chrome.storage){
     chrome.storage.local.get("itemList").then((data)=>{
-      setItemList(data.itemList);
+      if (data.itemList){
+        setItemList(data.itemList);
+      } else {
+        setItemList([]);
+      }
     });
     useEffect(() => {
       chrome.storage.local.get("settings").then((data)=>{
-        if (data){
+        console.log(data, data.settings);
+        if (data && data.settings){
           setBingoSettings(data.settings);
         } else {
           chrome.storage.local.set({
@@ -51,6 +56,7 @@ function App() {
 
   const setSettings = (newSettings:Settings) => {
     if (window.chrome && chrome.storage){
+      console.log("Storing new Settings: ", newSettings)
       chrome.storage.local.set({
         settings: newSettings,
       });

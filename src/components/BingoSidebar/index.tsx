@@ -1,5 +1,5 @@
 import exp from 'constants';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Panel, Table, InputGroup, InputNumber, Form, Toggle, InputPicker, Schema} from 'rsuite';
 import { Item, Settings } from '../../types';
 import FontPicker from '../Font-Picker';
@@ -80,11 +80,19 @@ function drawTable(itemList:Item[]){
 
 function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarProps):JSX.Element {
   const hiddenDebugFont = true;
+  const firstUpdate = useRef(true);
   const [formUpdates, setFormUpdates] = useState<Settings>(bingoSettings);
   useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     const timeOutId = setTimeout(() => {setBingoSettings(formUpdates)}, 500);
     return () => clearTimeout(timeOutId);
   }, [formUpdates]);
+  useEffect(() => {
+    setFormUpdates(bingoSettings);
+  }, [bingoSettings]);
   const updateFontFamily = (value:string) => {
     setFormUpdates({
       ...formUpdates,
@@ -92,6 +100,7 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarPr
     });
   }
   const formMap = (value:Record<string,any>) => {
+    
     if (value.autoRefresh){
       let refreshNumber = 0;
       refreshNumber = value.refreshNumber === 0? 1:0;
@@ -141,7 +150,7 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarPr
         </Form.Group>
         <Form.Group controlId={'font-family-input'}>
           <Form.ControlLabel>Font Family</Form.ControlLabel>
-          <FontPicker apiKey='AIzaSyD8Q42WjTFB6ECYa7Xjm-DK4eZtW0z8APA' activeFontFamily={bingoSettings.fontType} updateFontFamily={updateFontFamily}/>
+          <FontPicker apiKey='AIzaSyD8Q42WjTFB6ECYa7Xjm-DK4eZtW0z8APA' activeFontFamily={formUpdates.fontType} updateFontFamily={updateFontFamily}/>
         </Form.Group>
         <Form.Group controlId={'font-size-input'}>
           <Form.ControlLabel>Font Size</Form.ControlLabel>
