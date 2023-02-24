@@ -1,6 +1,7 @@
 import exp from 'constants';
+import { AnyARecord } from 'dns';
 import React, { useEffect, useState, useRef } from 'react';
-import { Panel, Table, InputGroup, InputNumber, Form, Toggle, InputPicker, Schema} from 'rsuite';
+import { Panel, Table, InputGroup, InputNumber, Form, Toggle, InputPicker, Schema, ButtonToolbar, Button} from 'rsuite';
 import { Item, Settings } from '../../types';
 import FontPicker from '../Font-Picker';
 const { StringType, NumberType, BooleanType } = Schema.Types;
@@ -9,6 +10,9 @@ interface BingoSidebarProps {
   itemList: Item[],
   bingoSettings: Settings,
   setBingoSettings: (value:Settings) => void,
+  removeItemList: (value:Item[], itemRemoved?:Item) => void,
+  clearBingoSettings:()=>void,
+  clearBingoBoard:()=>void,
 }
 
 interface ImageCellProps {
@@ -62,23 +66,28 @@ const ImageCell = ({ rowData, dataKey, ...props }:ImageCellProps) => (
   </Table.Cell>
 );
 
-function drawTable(itemList:Item[]){
-
-    return(
-    <Table data={itemList} height={295} wordWrap="break-word">
-      <Table.Column width={80} align="center">
-        <Table.HeaderCell>Image</Table.HeaderCell>
-        <ImageCell dataKey="imageUrl" />
-      </Table.Column>
-      <Table.Column width={181} align="center" verticalAlign='middle'>
-        <Table.HeaderCell>Item Name</Table.HeaderCell>
-        <Table.Cell dataKey="name" />
-      </Table.Column>
-    </Table>)
+function drawTable(itemList:Item[], updateItemList: (value:Item[], itemRemoved: Item) => void){
+  const removeItem = (rowData:any) => {
+    let newItemList = [...itemList];
+    let removeIndex = newItemList.findIndex((item) => rowData.name === item.name);
+    const itemRemoved = newItemList.splice(removeIndex, 1);
+    updateItemList(newItemList, itemRemoved[0]);
+  }
+  return(
+  <Table data={itemList} height={295} wordWrap="break-word" onRowClick={removeItem}>
+    <Table.Column width={80} align="center">
+      <Table.HeaderCell>Image</Table.HeaderCell>
+      <ImageCell dataKey="imageUrl" />
+    </Table.Column>
+    <Table.Column width={181} align="center" verticalAlign='middle'>
+      <Table.HeaderCell>Item Name</Table.HeaderCell>
+      <Table.Cell dataKey="name" />
+    </Table.Column>
+  </Table>)
 }
 
 
-function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarProps):JSX.Element {
+function BingoSidebar({itemList, bingoSettings, setBingoSettings, removeItemList, clearBingoSettings, clearBingoBoard}:BingoSidebarProps):JSX.Element {
   const hiddenDebugFont = true;
   const firstUpdate = useRef(true);
   const [formUpdates, setFormUpdates] = useState<Settings>(bingoSettings);
@@ -100,11 +109,6 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarPr
     });
   }
   const formMap = (value:Record<string,any>) => {
-    
-    if (value.autoRefresh){
-      let refreshNumber = 0;
-      refreshNumber = value.refreshNumber === 0? 1:0;
-    }
     setFormUpdates({
       ...value as Settings,
       fontSize: parseInt(value.fontSize),
@@ -112,11 +116,9 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarPr
       refreshNumber: value.autoRefresh ? Math.random()*10000 : value.refreshNumber,
     })
   }
-  
 
   return(
     <Panel bordered style={{height:"1250px", overflow: 'auto'}} header="Settings">
-      
       <Form 
         fluid
         formValue={formUpdates}
@@ -197,9 +199,14 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings}:BingoSidebarPr
         </Form.Group>
         <Form.Group controlId={'table-input-label'}>
           <Form.ControlLabel>Remove item from list</Form.ControlLabel>
+          {drawTable(itemList, removeItemList)}
+        </Form.Group>
+        <Form.Group controlId={'destroy-label'}>
+          <Button block appearance="primary" color="red" onClick={()=>removeItemList([])}>Clear Item List</Button>
+          <Button block appearance="primary" color="red" onClick={()=>clearBingoBoard()}>Clear Bingo Board</Button>
+          <Button block appearance="primary" color="red" onClick={()=>clearBingoSettings()}>Reset Settings</Button>
         </Form.Group>
       </Form>
-      {drawTable(itemList)}
       <div className='apply-font' style={{visibility:hiddenDebugFont?'hidden':'visible'}}>Testing font</div>
     </Panel>
   );

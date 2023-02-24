@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Panel, InputPicker, Placeholder, Input } from 'rsuite';
 import { Item, Settings } from '../../types';
+import { blankItem } from '../defaults';
 import styles from './index.module.css';
 
 interface BingoCardProps {
@@ -26,23 +27,26 @@ interface BingoSpaceProps {
   bingoList: Item[]
 }
 
-const blankItem:Item = {name:"_blank_", imageUrl:""}
-
 function bingoSpace({item, location, setBingoCard, setOverrideName, bingoList }:BingoSpaceProps){
-  const dropDownData = bingoList.map((item, index) => ({label: item.name, value: index}))
+  const dropDownData = bingoList.map((item, index) => ({label: item.name, value: index}));
   let itemView = (<Placeholder.Paragraph />);
   let override = (<div />);
+  let defaultValue = -1;
   if (item.name !== '_blank_'){
-    itemView = (<img src={item.imageUrl} className={styles.imageStyle}></img>)
-    override = (<Input as="textarea" rows={2} placeholder="Override name" onChange={(value) => (setOverrideName(value, location))}/>);
+    let findData = dropDownData.find((value) => value.label === item.name);
+    if (findData){
+      defaultValue = findData.value;
+      itemView = (<img src={item.imageUrl} className={styles.imageStyle}></img>)
+      override = (<Input as="textarea" rows={2} placeholder="Override name" value={item.overrideName? item.overrideName:''} onChange={(value) => (setOverrideName(value, location))}/>);
+    }
   }
-    return(
-      <Panel bordered className={styles.bingoSpace}>
-        {itemView}
-        <InputPicker block data={dropDownData} onChange={(index => setBingoCard(bingoList[index], location))}/>
-        {override}
-      </Panel>
-    )
+  return(
+    <Panel bordered className={styles.bingoSpace}>
+      {itemView}
+      <InputPicker block data={dropDownData} value={defaultValue} onChange={(index => setBingoCard(bingoList[index], location))}/>
+      {override}
+    </Panel>
+  )
 }
 
 function drawBoard({bingoSettings, bingoBoard, setBingoCard, setOverrideName, bingoList}:DrawCardProps){

@@ -29,3 +29,13 @@ export interface Settings {
   autoRefresh:boolean;
   refreshNumber:number;
 }
+
+export interface ModalOverlay{
+  title:string;
+  body:string;
+  footer:{
+    action: ()=>void;
+    actionTitle: string;
+  }
+  open:boolean;
+}

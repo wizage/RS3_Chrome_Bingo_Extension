@@ -49,13 +49,11 @@ function BingoCanvas({bingoSettings, bingoBoard, refresh}:BingoCanvasProps){
       canvasRef.current.height = height;
       canvasCtxRef.current = canvasRef.current.getContext('2d');
       let context = canvasCtxRef.current;
-      context!.fillStyle = "#ffffff";
+      context!.fillStyle = bingoSettings.backgroundColor;
       context!.font = `${bingoSettings.fontFormat?bingoSettings.fontFormat:''} ${bingoSettings.fontSize}px ${bingoSettings.fontType}`
       context!.textAlign = "center";
       context!.fillRect(0, 0, width, height);
       context!.moveTo(0, 0);
-      // context!.strokeStyle = '#325FA2';
-      // context!.fillStyle = '#eeeeee';
       context!.lineWidth = 2;
       for (let lines = 0; lines <= size; lines++){
         context!.strokeStyle = bingoSettings.lineColor;

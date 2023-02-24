@@ -1,4 +1,4 @@
-import { Settings } from "../types";
+import { ModalOverlay, Settings, Item} from "../types";
 
 export const defaultSettings:Settings = {
   bingoSize: 5,
@@ -14,3 +14,15 @@ export const defaultSettings:Settings = {
   autoRefresh: false,
   refreshNumber: 0,
 }
+
+export const overlayEmpty:ModalOverlay = {
+  title:'',
+  body:'',
+  footer:{
+    action:()=>{},
+    actionTitle:'',
+  },
+  open: false
+}
+
+export const blankItem:Item = {name:"_blank_", imageUrl:""}
