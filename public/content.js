@@ -1,5 +1,5 @@
 function filterThumbs(element){
-   return element.firstChild.src.includes("thumb");
+   return element.firstChild.src.includes("thumb") || element.firstChild.src.includes("detail");
 }
 
 function gatherInfo(){
