@@ -1,6 +1,6 @@
 {
-  "name": "Chrome Bingo Creater",
-  "description": "Create a bingo card for runescape",
+  "name": "Runescape Bingo Creater",
+  "description": "Create a Runescape Bingo for either OSRS or RS3. Go to the wiki and right click add entry to bingo. When you add your items click on the icon of the extension, and design your bingo square.",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -10,9 +10,9 @@
       "default_title": "Open the bingo maker"
   },
   "icons": {
-      "16": "logo192.png",
-      "48": "logo192.png",
-      "128": "logo192.png"
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
   },
   "permissions": [
     "contextMenus",
