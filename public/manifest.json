@@ -1,6 +1,6 @@
 {
   "name": "Runescape Bingo Creater",
-  "description": "Create a Runescape Bingo for either OSRS or RS3. Go to the wiki and right click add entry to bingo. When you add your items click on the icon of the extension, and design your bingo square.",
+  "description": "Create a Runescape Bingo for either OSRS or RS3. Go to the wiki and right click add entry to bingo, then design away.",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
