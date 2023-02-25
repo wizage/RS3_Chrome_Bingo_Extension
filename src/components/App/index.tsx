@@ -56,7 +56,7 @@ function App() {
       title:'Are you sure?',
       body:'You will lose your entire bingo board.',
       footer:{
-        action:(()=>updateBingoBoard([])),
+        action:(()=>{updateBingoBoard([]); refreshImage();}),
         actionTitle:'Reset Bingo Board',
       },
       open: true
@@ -69,7 +69,7 @@ function App() {
       title:'Are you sure?',
       body:'You will be reset to the default settings.',
       footer:{
-        action:(()=>setSettings(defaultSettings)),
+        action:(()=> setSettings({...defaultSettings})),
         actionTitle:'Reset Settings',
       },
       open: true
@@ -156,7 +156,7 @@ function App() {
     <div className="App">
       <CustomProvider theme='dark'>
         <Container>
-          <Header><BingoHeader bingoSettings={bingoSettings} bingoList={itemList} bingoBoard={bingoBoard} setBingoBoard={setBingoBoard}/></Header>
+          <Header><BingoHeader bingoSettings={bingoSettings} bingoList={itemList} bingoBoard={bingoBoard} setBingoBoard={setBingoBoard} setSettings={setSettings} setItemList={setItemList}/></Header>
           <Container>
             <Content>
               <Modal size={'xs'} open={modalOverlay.open} onClose={() => setModalOverlay({...modalOverlay, open:false})}>
@@ -168,7 +168,7 @@ function App() {
                   <Button onClick={() => setModalOverlay({...modalOverlay, open:false})} appearance="subtle">
                     Cancel
                   </Button>
-                  <Button onClick={() => {modalOverlay.footer.action(); setModalOverlay({...modalOverlay, open:false}); refreshImage();}} color='red' appearance="primary">
+                  <Button onClick={() => {modalOverlay.footer.action(); setModalOverlay({...modalOverlay, open:false});}} color='red' appearance="primary">
                     {modalOverlay.footer.actionTitle}
                   </Button>
                 </Modal.Footer>

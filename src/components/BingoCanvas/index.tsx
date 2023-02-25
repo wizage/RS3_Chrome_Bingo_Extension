@@ -45,6 +45,7 @@ function BingoCanvas({bingoSettings, bingoBoard, refresh}:BingoCanvasProps){
   useEffect(() => {
     // Initialize
     if (canvasRef.current) {
+      
       canvasRef.current.width = width;
       canvasRef.current.height = height;
       canvasCtxRef.current = canvasRef.current.getContext('2d');
@@ -88,7 +89,8 @@ function BingoCanvas({bingoSettings, bingoBoard, refresh}:BingoCanvasProps){
         for (let j = 0; j < bingoBoard[i].length; j++){
           let img = new Image;
           img.src = bingoBoard[i][j].imageUrl;
-          img.onload = function(){
+          img.crossOrigin = "Anonymous";
+          img.addEventListener("load", function(){
             let scaledHeight = 0;
             let scaledWidth = 0;
             if (img.naturalWidth >= img.naturalHeight){
@@ -106,12 +108,12 @@ function BingoCanvas({bingoSettings, bingoBoard, refresh}:BingoCanvasProps){
             } else if (bingoBoard[i][j].name !== "_blank_"){
               wrapText(context!, bingoBoard[i][j].name,  82+(j*squareSize), 30+i*squareSize, squareSize, bingoSettings.fontSize, bingoSettings.outlineEnable);
             }
-          }
+          }, false);
         }
       }
     }
   }, [bingoSettings.refreshNumber]);
-  return <canvas ref={canvasRef} className={styles.content}></canvas>;
+  return <canvas ref={canvasRef} className={styles.content} id='PNGEXPORT'></canvas>;
 }
 
 export default BingoCanvas

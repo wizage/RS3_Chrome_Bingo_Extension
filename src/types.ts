@@ -12,7 +12,8 @@ export interface bingoStore {
 export interface jsonDoc {
   settings: Settings;
   itemList: Item[];
-  bingoCard: bingoStore;
+  bingoCardBot: bingoStore;
+  bingoBoard: Item[][];
 }
 
 export interface Settings {

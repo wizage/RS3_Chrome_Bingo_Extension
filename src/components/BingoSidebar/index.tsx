@@ -96,11 +96,15 @@ function BingoSidebar({itemList, bingoSettings, setBingoSettings, removeItemList
       firstUpdate.current = false;
       return;
     }
+    if (bingoSettings == formUpdates){
+      return;
+    }
     const timeOutId = setTimeout(() => {setBingoSettings(formUpdates)}, 500);
     return () => clearTimeout(timeOutId);
   }, [formUpdates]);
   useEffect(() => {
     setFormUpdates(bingoSettings);
+    
   }, [bingoSettings]);
   const updateFontFamily = (value:string) => {
     setFormUpdates({
