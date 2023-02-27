@@ -8,6 +8,9 @@ chrome.runtime.onInstalled.addListener(function() {
       title: 'Create new entry for bingo',
       documentUrlPatterns:["*://*.runescape.wiki/w/*"]
     });
+    chrome.storage.local.set({
+      itemList: [],
+    });
 });
 
 chrome.storage.onChanged.addListener(function(changes, area) {
@@ -19,12 +22,6 @@ chrome.storage.onChanged.addListener(function(changes, area) {
     }
     
   }
-});
-
-chrome.runtime.onStartup.addListener(function() {
-  chrome.storage.local.set({
-    itemList: [],
-  });
 });
 
 chrome.contextMenus.onClicked.addListener(function(item, tab){
